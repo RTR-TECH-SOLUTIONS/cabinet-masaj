@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+@theme {
+  /* Paletă scoasă din fotografii: cearșaf crem, lemn închis, peretele ocru al cabinetului */
+  --color-paper: #faf7f1;
+  --color-cream: #f2ece1;
+  --color-sand: #e4dacb;
+  --color-line: #d9cdbb;
+  --color-ink: #21170f;
+  --color-ink-soft: #5d4f43;
+  --color-bronze: #87552e;
+  --color-bronze-dark: #6b4122;
+  --color-night: #1b130f;
+
+  --font-serif: "Cormorant Garamond Variable", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Figtree Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-btn: 10px;
+  --radius-photo: 12px;
+}
+
+:root {
+  --header-h: 4.5rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-bronze);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--color-sand);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+
+    @media (min-width: 768px) { padding-inline: 2.5rem; }
+  }
+
+  .section {
+    padding-block: clamp(4rem, 9vw, 7.5rem);
+  }
+
+  .h2 {
+    font-size: clamp(2.5rem, 5vw, 4.125rem);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    min-height: 3.25rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-btn);
+    background: var(--color-bronze);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background-color 180ms ease-out, transform 180ms ease-out;
+
+    &:hover { background: var(--color-bronze-dark); }
+    &:active { transform: translateY(1px); }
+  }
+
+  .btn-ink {
+    background: var(--color-ink);
+    &:hover { background: #000; }
+  }
+
+  .link {
+    color: var(--color-ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--color-bronze);
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 5px;
+    transition: text-decoration-color 180ms ease-out;
+
+    &:hover { text-decoration-color: var(--color-ink); }
+  }
+
+  .photo {
+    border-radius: var(--radius-photo);
+    overflow: hidden;
+    background: var(--color-sand);
+
+    & img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}

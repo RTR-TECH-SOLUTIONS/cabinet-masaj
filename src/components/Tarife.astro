@@ -1,0 +1,282 @@
+---
+import WaIcon from './WaIcon.astro';
+import { masaje, abonamente } from '../data/masaje';
+import { site, waDefault } from '../data/site';
+
+const intervale = ['dimineața', 'la prânz', 'după-amiaza', 'seara'];
+---
+
+<section id="tarife" class="section bg-cream">
+  <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+    <div class="lg:sticky lg:top-28 lg:self-start">
+      <h2 class="h2">Tarife</h2>
+      <p class="mt-5 max-w-md text-ink-soft">
+        Alege ședința din listă, spune-mi când ai vrea să vii și trimite cererea pe WhatsApp.
+        Îți răspund cu orele libere, de obicei în aceeași zi.
+      </p>
+
+      <div class="mt-10 border-t border-line pt-6">
+        <h3 class="text-[2rem] font-semibold">Abonamente</h3>
+        <ul class="mt-3">
+          {abonamente.map((a) => (
+            <li class="rand">
+              <span>
+                <span class="font-semibold">{a.nume}</span>
+                <span class="block text-[0.9375rem] text-ink-soft">{a.detaliu}</span>
+              </span>
+              <span class="puncte" aria-hidden="true"></span>
+              <span class="pret">{a.reducere}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p class="mt-6 max-w-md text-[0.9688rem] text-ink-soft">
+        Faci un cadou? Scriu de mână un <strong class="font-semibold text-ink">voucher</strong> pentru orice
+        ședință din listă. Îl ridici de la cabinet sau ți-l trimit în format PDF.
+      </p>
+    </div>
+
+    <form class="fisa" data-programare novalidate>
+      {masaje.map((m, i) => (
+        <fieldset class="masaj" id={`tarif-${m.id}`}>
+          <legend class="font-serif text-[2rem] font-semibold leading-tight">{m.nume}</legend>
+          <p class="mt-1 max-w-xl text-[0.9688rem] text-ink-soft">{m.descriere}</p>
+          <div class="mt-3">
+            {m.sedinte.map((s, j) => (
+              <label class="rand alege">
+                <input
+                  type="radio"
+                  name="sedinta"
+                  class="sr-only"
+                  value={`${m.id}-${s.minute}`}
+                  data-masaj={m.nume}
+                  data-minute={s.minute}
+                  data-pret={s.pret}
+                  checked={i === 0 && j === 0}
+                />
+                <span class="bulina" aria-hidden="true"></span>
+                <span class="font-medium">{s.minute} de minute</span>
+                <span class="puncte" aria-hidden="true"></span>
+                <span class="pret">{s.pret} lei</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      ))}
+
+      <div class="cerere">
+        <h3 class="text-[2rem] font-semibold">Când ai vrea să vii?</h3>
+        <div class="mt-5 grid gap-5 sm:grid-cols-2">
+          <label class="camp">
+            <span>Ziua</span>
+            <input type="date" name="zi" data-zi />
+          </label>
+          <label class="camp">
+            <span>Numele tău</span>
+            <input type="text" name="nume" autocomplete="given-name" placeholder="ex. Andreea" data-nume />
+          </label>
+        </div>
+        <fieldset class="mt-5">
+          <legend class="text-[0.9375rem] font-semibold">Partea zilei</legend>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {intervale.map((int) => (
+              <label class="chip">
+                <input type="radio" name="interval" value={int} class="sr-only" />
+                <span>{int}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <p class="mt-7 text-[1.0625rem]" aria-live="polite">
+          Ai ales: <strong class="font-semibold" data-rezumat>Masaj terapeutic, 60 de minute, 190 lei</strong>
+        </p>
+        <!-- TODO(real): numărul de WhatsApp al clientului; opțional, calendar cu ore libere reale. -->
+        <a href={waDefault} target="_blank" rel="noopener" class="btn mt-4 w-full sm:w-auto" data-trimite>
+          <WaIcon />
+          Trimite cererea pe WhatsApp
+        </a>
+        <p class="mt-3 text-[0.9375rem] text-ink-soft">
+          Sau sună la <a href={site.phoneHref} class="link">{site.phoneDisplay}</a>. Plata se face la cabinet, cash sau cu cardul.
+        </p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+  .fisa {
+    background: var(--color-paper);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-photo);
+    padding: clamp(1.25rem, 3.5vw, 2.5rem);
+  }
+
+  .masaj {
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-line);
+    scroll-margin-top: calc(var(--header-h) + 1.5rem);
+  }
+
+  .rand {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.625rem 0;
+  }
+
+  .puncte {
+    flex: 1;
+    min-width: 1.5rem;
+    border-bottom: 1.5px dotted #b7a892;
+    transform: translateY(-0.3em);
+  }
+
+  .pret {
+    font-family: var(--font-serif);
+    font-size: 1.625rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--color-bronze);
+    white-space: nowrap;
+  }
+
+  .alege {
+    cursor: pointer;
+    margin-inline: -0.75rem;
+    padding-inline: 0.75rem;
+    border-radius: 8px;
+    transition: background-color 150ms ease-out;
+
+    &:hover { background: var(--color-cream); }
+    &:has(:checked) { background: var(--color-sand); }
+    &:has(:focus-visible) {
+      outline: 2px solid var(--color-bronze);
+      outline-offset: 2px;
+    }
+  }
+
+  .bulina {
+    flex: none;
+    align-self: center;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-ink-soft);
+    background: var(--color-paper);
+    transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+  }
+
+  .alege:has(:checked) .bulina {
+    border-color: var(--color-bronze);
+    box-shadow: inset 0 0 0 4px var(--color-bronze);
+  }
+
+  .camp {
+    display: grid;
+    gap: 0.375rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+
+    & input {
+      min-height: 3rem;
+      padding: 0.5rem 0.875rem;
+      border: 1.5px solid var(--color-line);
+      border-radius: 8px;
+      background: #fff;
+      font: inherit;
+      font-weight: 400;
+      font-size: 1rem;
+      color: var(--color-ink);
+
+      &:focus-visible {
+        outline: 2px solid var(--color-bronze);
+        outline-offset: 1px;
+        border-color: var(--color-bronze);
+      }
+    }
+  }
+
+  .chip {
+    cursor: pointer;
+
+    & span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+      padding: 0.375rem 1rem;
+      border: 1.5px solid var(--color-line);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 0.9688rem;
+      transition: background-color 150ms ease-out, border-color 150ms ease-out, color 150ms ease-out;
+    }
+
+    &:hover span { border-color: var(--color-ink-soft); }
+    & :checked + span {
+      background: var(--color-ink);
+      border-color: var(--color-ink);
+      color: #fff;
+    }
+    & :focus-visible + span {
+      outline: 2px solid var(--color-bronze);
+      outline-offset: 2px;
+    }
+  }
+</style>
+
+<script>
+  import { waLink } from '../data/site';
+
+  const form = document.querySelector<HTMLFormElement>('[data-programare]');
+  const rezumat = document.querySelector<HTMLElement>('[data-rezumat]');
+  const trimite = document.querySelector<HTMLAnchorElement>('[data-trimite]');
+  const zi = document.querySelector<HTMLInputElement>('[data-zi]');
+  const nume = document.querySelector<HTMLInputElement>('[data-nume]');
+
+  if (zi) zi.min = new Date().toISOString().slice(0, 10);
+
+  function actualizeaza() {
+    if (!form || !rezumat || !trimite) return;
+    const ales = form.querySelector<HTMLInputElement>('input[name="sedinta"]:checked');
+    if (!ales) return;
+
+    const { masaj, minute, pret } = ales.dataset;
+    rezumat.textContent = `${masaj}, ${minute} de minute, ${pret} lei`;
+
+    let mesaj = `Bună ziua! Aș dori o programare la ${masaj}, ${minute} de minute (${pret} lei).`;
+    const interval = form.querySelector<HTMLInputElement>('input[name="interval"]:checked')?.value;
+    if (zi?.value) {
+      const data = new Date(`${zi.value}T12:00:00`).toLocaleDateString('ro-RO', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+      });
+      mesaj += ` Aș vrea să vin ${data}${interval ? `, ${interval}` : ''}.`;
+    } else if (interval) {
+      mesaj += ` Mi-ar conveni ${interval}.`;
+    }
+    const n = nume?.value.trim();
+    if (n) mesaj += ` Numele meu este ${n}.`;
+
+    trimite.href = waLink(mesaj);
+  }
+
+  form?.addEventListener('input', actualizeaza);
+  form?.addEventListener('submit', (e) => e.preventDefault());
+
+  // Dalele din „Masaje” preselectează prima ședință a masajului ales.
+  document.querySelectorAll<HTMLAnchorElement>('[data-alege]').forEach((a) => {
+    a.addEventListener('click', () => {
+      const radio = form?.querySelector<HTMLInputElement>(`input[name="sedinta"][value^="${a.dataset.alege}-"]`);
+      if (radio) {
+        radio.checked = true;
+        actualizeaza();
+      }
+    });
+  });
+
+  actualizeaza();
+</script>

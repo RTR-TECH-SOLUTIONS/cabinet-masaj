@@ -1,0 +1,579 @@
+---
+import { Image } from 'astro:assets';
+
+import Layout from '../layouts/Layout.astro';
+import Tarife from '../components/Tarife.astro';
+import WaIcon from '../components/WaIcon.astro';
+import { masaje, pretMinim, durate } from '../data/masaje';
+import { site, waDefault } from '../data/site';
+
+import hero from '../assets/foto/hero.jpg';
+import cabinet from '../assets/foto/cabinet-2.jpg';
+import uleiuri from '../assets/foto/uleiuri.jpg';
+import prosoape from '../assets/foto/prosoape.jpg';
+import lumanare from '../assets/foto/lumanare.jpg';
+
+const pasi = [
+  {
+    titlu: 'Vorbim cinci minute',
+    text: 'Îmi spui ce te doare, ce operații sau probleme de sănătate ai și cât de tare vrei presiunea.',
+  },
+  {
+    titlu: 'Te întinzi pe masa încălzită',
+    text: 'Ies din cameră cât te schimbi. Rămâi acoperit cu prosopul și descopăr doar zona pe care lucrez.',
+  },
+  {
+    titlu: 'Masajul, cap-coadă',
+    text: 'Șaizeci de minute înseamnă șaizeci de minute pe masă. Discuția și schimbatul nu se scad din timp.',
+  },
+  {
+    titlu: 'Zece minute de liniște',
+    text: 'Te ridici când ești gata. Te așteaptă un ceai de tei și un pahar cu apă.',
+  },
+];
+
+// TODO(real): recenzii reale de pe Google Business Profile.
+const recenzii = [
+  {
+    text: 'Am venit cu o ceafă înțepenită de trei săptămâni. După a doua ședință am putut întoarce capul la volan fără să mă răsucesc din tot corpul.',
+    nume: 'Radu P.',
+    loc: 'Tătărași',
+  },
+  {
+    text: 'Curat, cald și liniște. Nimeni nu te grăbește la final.',
+    nume: 'Mihaela S.',
+    loc: 'Copou',
+  },
+  {
+    text: 'Vin lunar pentru spate de vreo doi ani. Ioana ține minte de fiecare dată unde mă doare.',
+    nume: 'Cătălin A.',
+    loc: 'Păcurari',
+  },
+];
+
+const intrebari = [
+  {
+    q: 'Cu ce mă îmbrac la masaj?',
+    a: 'Vii cum ești. Rămâi în lenjerie și ești acoperit tot timpul cu un prosop mare; descopăr doar zona pe care lucrez. La reflexoterapie îți suflec doar pantalonii.',
+  },
+  {
+    q: 'Doare masajul terapeutic?',
+    a: 'Poate fi incomod pe zonele încordate, dar nu trebuie să doară. Îmi spui pe o scară de la 1 la 10 cum simți presiunea și o reglez pe loc.',
+  },
+  {
+    q: 'Cât de des ar trebui să vin?',
+    a: 'Pentru o durere care te supără acum, de obicei 3 sau 4 ședințe la o săptămână distanță. Pentru întreținere, o dată pe lună e suficient.',
+  },
+  {
+    q: 'Când nu am voie la masaj?',
+    a: 'Cu febră, infecții ale pielii, tromboză, în primele săptămâni după o operație sau în primul trimestru de sarcină. Dacă ai o afecțiune cronică, întreabă mai întâi medicul și spune-mi la programare.',
+  },
+  {
+    q: 'Pot anula sau muta programarea?',
+    a: 'Da, fără nicio taxă, cu un mesaj trimis cu cel puțin 12 ore înainte. Așa pot oferi ora altcuiva.',
+  },
+  {
+    q: 'Faci masaj și la domiciliu?',
+    a: 'Nu. Lucrez doar la cabinet, unde am masa încălzită, pietrele și tot ce îmi trebuie la îndemână.',
+  },
+];
+---
+
+<Layout>
+  <section id="top" class="hero">
+    <Image
+      src={hero}
+      alt="Mâinile terapeutului pe spatele unui client, în lumina caldă de la fereastră"
+      widths={[640, 1024, 1600, 2200]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+      class="hero-img"
+    />
+    <div class="hero-veil" aria-hidden="true"></div>
+    <div class="wrap hero-body">
+      <div class="max-w-[35rem]">
+        <h1 class="text-[clamp(3rem,6.6vw,5.5rem)] leading-[1.12]">
+          Masaj terapeutic și de relaxare <em class="text-bronze">la {site.city}, în {site.area}</em>
+        </h1>
+        <p class="mt-6 max-w-[30rem] text-[1.125rem] text-ink-soft">
+          Un singur terapeut și un singur client pe oră. Ședințe de 60 sau 90 de minute, pe masă
+          încălzită, doar cu programare.
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+          <a href={waDefault} target="_blank" rel="noopener" class="btn">
+            <WaIcon />
+            Programează pe WhatsApp
+          </a>
+          <a href="#tarife" class="link">Vezi tarifele</a>
+        </div>
+        <p class="mt-9 text-[0.9375rem] text-ink-soft">
+          <strong class="font-semibold text-ink">{site.google.score} din 5 pe Google</strong>, din {site.google.count} de recenzii
+          <span class="mx-1.5" aria-hidden="true">·</span>
+          Luni – Sâmbătă, de la 9:00
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="masaje" class="section">
+    <div class="wrap">
+      <div class="flex flex-wrap items-end justify-between gap-x-12 gap-y-4">
+        <h2 class="h2 max-w-[18ch]">Șase feluri de masaj, alese după ce te supără</h2>
+        <p class="max-w-sm text-ink-soft">
+          Nu știi care ți se potrivește? Scrie-mi ce te doare și îți spun eu ce are rost să încercăm.
+        </p>
+      </div>
+
+      <ul class="mozaic mt-10">
+        {masaje.map((m) => (
+          <li class={`dala dala-${m.id}`}>
+            <a href={`#tarif-${m.id}`} data-alege={m.id}>
+              <Image
+                src={m.foto}
+                alt={m.alt}
+                widths={[480, 800, 1200]}
+                sizes="(min-width: 1024px) 55vw, 100vw"
+                loading="lazy"
+              />
+              <span class="dala-text">
+                <span class="font-serif text-[clamp(1.875rem,2.6vw,2.375rem)] font-semibold leading-none">{m.nume}</span>
+                <span class="mt-2 block text-[0.9375rem] opacity-90">{m.pentru}</span>
+                <span class="mt-1 block text-[0.9375rem] font-semibold">
+                  {durate(m)}, de la {pretMinim(m)} lei
+                </span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Tarife />
+
+  <section id="despre" class="section">
+    <div class="wrap grid items-start gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+      <div class="relative">
+        <div class="photo aspect-[4/5]">
+          <Image
+            src={cabinet}
+            alt="Cabinetul: masa de masaj pregătită lângă fereastră, cu lambriu de lemn"
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 1024px) 40vw, 100vw"
+            loading="lazy"
+          />
+        </div>
+        <div class="photo absolute -bottom-10 -right-4 hidden aspect-[3/4] w-[38%] border-[6px] border-paper md:block lg:-right-10">
+          <Image
+            src={prosoape}
+            alt="Prosoape curate, rulate pe o băncuță de lemn"
+            widths={[320, 520]}
+            sizes="20vw"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <div class="lg:pt-6">
+        <h2 class="h2">Cine te masează</h2>
+        <p class="mt-6 text-[1.125rem]">
+          Sunt {site.therapist} și fac masaj din 2016. Primii patru ani am lucrat într-o clinică de
+          recuperare medicală, alături de kinetoterapeuți, de unde am rămas cu obiceiul de a întreba
+          mult înainte să pun mâna.
+        </p>
+        <p class="mt-4 text-ink-soft">
+          Din 2020 lucrez singură, în cabinetul din {site.area}. Am ales să primesc un singur client
+          pe oră, ca să nu te întâlnești cu nimeni pe hol și să nu mă uit la ceas în timp ce lucrez.
+        </p>
+
+        <dl class="mt-9">
+          <div class="fapt">
+            <dt>Calificare</dt>
+            <dd>Tehnician maseur, curs acreditat ANC (2016). Specializare în deep tissue și reflexoterapie.</dd>
+          </div>
+          <div class="fapt">
+            <dt>La fiecare client</dt>
+            <dd>Cearșaf și prosoape schimbate, masă dezinfectată, cameră aerisită un sfert de oră.</dd>
+          </div>
+          <div class="fapt">
+            <dt>Cu ce lucrez</dt>
+            <dd>Ulei de migdale dulci presat la rece, fără parfum. La cerere, ulei de lavandă sau unt de shea.</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-cream">
+    <div class="wrap grid items-center gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
+      <div>
+        <h2 class="h2">Cum decurge o ședință</h2>
+        <ol class="pasi mt-8">
+          {pasi.map((p) => (
+            <li>
+              <h3 class="text-[1.875rem] font-semibold">{p.titlu}</h3>
+              <p class="mt-1.5 text-ink-soft">{p.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div class="photo aspect-[4/5] lg:aspect-[3/4]">
+        <Image
+          src={uleiuri}
+          alt="Ulei de masaj picurat din pipetă, lângă sticluțe și o lumânare aprinsă"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 40vw, 100vw"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="recenzii">
+    <div class="wrap grid items-center gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)]">
+      <div class="photo aspect-[4/3] lg:aspect-[3/4]">
+        <Image
+          src={lumanare}
+          alt="Prosoape gri rulate și două lumânări aprinse"
+          widths={[480, 800, 1000]}
+          sizes="(min-width: 1024px) 33vw, 100vw"
+          loading="lazy"
+        />
+      </div>
+      <div>
+        <h2 class="sr-only">Ce spun clienții</h2>
+        <figure>
+          <blockquote class="font-serif text-[clamp(1.875rem,3.4vw,3rem)] font-medium leading-[1.12] text-white">
+            „{recenzii[0].text}”
+          </blockquote>
+          <figcaption class="mt-5 text-[0.9688rem]">
+            {recenzii[0].nume}, {recenzii[0].loc}
+          </figcaption>
+        </figure>
+
+        <div class="mt-10 grid gap-8 border-t border-white/15 pt-8 sm:grid-cols-2">
+          {recenzii.slice(1).map((r) => (
+            <figure>
+              <blockquote class="text-[1.0625rem] text-white">„{r.text}”</blockquote>
+              <figcaption class="mt-3 text-[0.9375rem]">{r.nume}, {r.loc}</figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <p class="mt-10 text-[0.9688rem]">
+          <strong class="font-semibold text-white">{site.google.score} din 5</strong> din {site.google.count} de recenzii pe Google.
+          <!-- TODO(real): link către profilul Google al cabinetului. -->
+          <a href="#contact" class="ml-1 text-white underline decoration-bronze decoration-[1.5px] underline-offset-[5px]">Citește-le pe toate</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="intrebari" class="section">
+    <div class="wrap grid gap-x-16 gap-y-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)]">
+      <div>
+        <h2 class="h2">Întrebări dinaintea primei ședințe</h2>
+        <p class="mt-5 max-w-sm text-ink-soft">
+          Dacă n-ai găsit răspunsul aici, <a href={waDefault} target="_blank" rel="noopener" class="link">scrie-mi pe WhatsApp</a>.
+        </p>
+      </div>
+      <div class="faq">
+        {intrebari.map((item) => (
+          <details>
+            <summary>
+              <span>{item.q}</span>
+              <span class="plus" aria-hidden="true"></span>
+            </summary>
+            <p>{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section bg-cream">
+    <div class="wrap grid gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+      <div>
+        <h2 class="h2">Unde mă găsești</h2>
+        <p class="mt-6 text-[1.125rem]">{site.address}</p>
+        <p class="mt-2 max-w-md text-ink-soft">
+          La cinci minute de mers pe jos de Parcul Copou. Intrarea e prin curte, la interfon 3.
+          Poți lăsa mașina în curte, e loc pentru două.
+        </p>
+
+        <table class="program mt-8">
+          <caption class="sr-only">Program</caption>
+          <tbody>
+            {site.program.map((p) => (
+              <tr>
+                <th scope="row">{p.zile}</th>
+                <td>{p.ore}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div class="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+          <a href={waDefault} target="_blank" rel="noopener" class="btn">
+            <WaIcon />
+            Programează pe WhatsApp
+          </a>
+          <a href={site.phoneHref} class="link tabular-nums">{site.phoneDisplay}</a>
+        </div>
+      </div>
+
+      <div class="photo min-h-[22rem] lg:min-h-[30rem]">
+        <iframe
+          title={`Hartă: ${site.address}`}
+          src={`https://www.google.com/maps?q=${encodeURIComponent(site.mapQuery)}&z=15&output=embed`}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          class="h-full min-h-[22rem] w-full border-0 lg:min-h-[30rem]"
+        ></iframe>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* Hero: pe mobil poza stă deasupra textului; de la 900px devine fundal cu voal crem în stânga. */
+  .hero {
+    position: relative;
+    background: var(--color-cream);
+    padding-top: var(--header-h);
+  }
+
+  .hero-img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 5 / 4;
+    object-fit: cover;
+    object-position: 50% 62%;
+  }
+
+  .hero-veil { display: none; }
+
+  .hero-body {
+    padding-block: 2.25rem 3.5rem;
+  }
+
+  @media (min-width: 900px) {
+    .hero {
+      display: flex;
+      align-items: center;
+      min-height: min(100svh, 50rem);
+      padding-top: 0;
+    }
+
+    .hero-img {
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 62%;
+      height: 100%;
+      aspect-ratio: auto;
+      object-position: 50% 60%;
+    }
+
+    .hero-veil {
+      display: block;
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        var(--color-cream) 0%,
+        var(--color-cream) 38%,
+        color-mix(in srgb, var(--color-cream) 55%, transparent) 50%,
+        transparent 66%
+      );
+    }
+
+    .hero-body {
+      position: relative;
+      padding-block: calc(var(--header-h) + 2.5rem) 4rem;
+    }
+  }
+
+  /* Mozaic de masaje: dale de mărimi diferite, numele pe poză. */
+  .mozaic {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .dala {
+    aspect-ratio: 16 / 10;
+  }
+
+  .dala a {
+    position: relative;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-photo);
+    background: var(--color-sand);
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .dala :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms ease-out;
+  }
+
+  .dala a:hover :global(img) { transform: scale(1.03); }
+
+  .dala a::after {
+    content: "";
+    position: absolute;
+    inset: 40% 0 0 0;
+    background: linear-gradient(to top, rgb(27 19 15 / 0.82), rgb(27 19 15 / 0));
+  }
+
+  .dala-text {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: 1;
+    padding: 1.25rem 1.375rem;
+  }
+
+  .dala-pietre-calde :global(img) { object-position: 50% 70%; }
+  .dala-relaxare :global(img) { object-position: 50% 68%; }
+  .dala-deep-tissue :global(img) { object-position: 50% 40%; }
+  .dala-reflexoterapie :global(img) { object-position: 50% 78%; }
+
+  @media (min-width: 640px) {
+    .mozaic { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 1024px) {
+    .mozaic {
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: 17rem 17rem 21rem;
+      gap: 1rem;
+    }
+
+    .dala { aspect-ratio: auto; }
+    .dala-terapeutic { grid-area: 1 / 1 / 3 / 8; }
+    .dala-relaxare { grid-area: 1 / 8 / 2 / 13; }
+    .dala-deep-tissue { grid-area: 2 / 8 / 3 / 13; }
+    .dala-pietre-calde { grid-area: 3 / 1 / 4 / 5; }
+    .dala-reflexoterapie { grid-area: 3 / 5 / 4 / 10; }
+    .dala-spate { grid-area: 3 / 10 / 4 / 13; }
+  }
+
+  /* Despre */
+  .fapt {
+    display: grid;
+    gap: 0.25rem 1.5rem;
+    padding-block: 1rem;
+    border-top: 1px solid var(--color-line);
+
+    & dt { font-weight: 600; }
+    & dd { color: var(--color-ink-soft); }
+
+    @media (min-width: 640px) {
+      grid-template-columns: 10rem 1fr;
+    }
+  }
+
+  /* Pași */
+  .pasi {
+    counter-reset: pas;
+
+    & li {
+      counter-increment: pas;
+      position: relative;
+      padding: 1.25rem 0 1.25rem 4rem;
+      border-top: 1px solid var(--color-line);
+    }
+
+    & li::before {
+      content: counter(pas);
+      position: absolute;
+      left: 0;
+      top: 0.9rem;
+      font-family: var(--font-serif);
+      font-size: 3rem;
+      font-weight: 500;
+      line-height: 1;
+      color: var(--color-bronze);
+    }
+  }
+
+  /* Recenzii */
+  .recenzii {
+    background: var(--color-night);
+    color: #cdbfad;
+    padding-block: clamp(4rem, 9vw, 7.5rem);
+  }
+
+  /* Întrebări */
+  .faq details {
+    border-top: 1px solid var(--color-line);
+
+    &:last-child { border-bottom: 1px solid var(--color-line); }
+  }
+
+  .faq summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.25rem;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.2vw, 1.875rem);
+    font-weight: 600;
+    line-height: 1.15;
+
+    &::-webkit-details-marker { display: none; }
+  }
+
+  .faq p {
+    max-width: 40rem;
+    padding-bottom: 1.5rem;
+    color: var(--color-ink-soft);
+  }
+
+  .plus {
+    position: relative;
+    flex: none;
+    width: 1.125rem;
+    height: 1.125rem;
+
+    &::before, &::after {
+      content: "";
+      position: absolute;
+      inset: 50% 0 auto 0;
+      height: 1.5px;
+      background: var(--color-bronze);
+      transition: transform 200ms ease-out;
+    }
+    &::after { transform: rotate(90deg); }
+  }
+
+  details[open] .plus::after { transform: rotate(0deg); }
+
+  /* Program */
+  .program {
+    width: 100%;
+    max-width: 24rem;
+    border-collapse: collapse;
+
+    & th, & td {
+      padding-block: 0.75rem;
+      border-top: 1px solid var(--color-line);
+      text-align: left;
+      font-weight: 400;
+    }
+    & tr:last-child th, & tr:last-child td { border-bottom: 1px solid var(--color-line); }
+    & td {
+      text-align: right;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+</style>
